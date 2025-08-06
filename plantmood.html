@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MoodPlant 🌱</title>
+  <style>
+    :root {
+      --bg: #e8f5e9;
+      --card: #ffffff;
+      --text: #2e7d32;
+      --accent: #66bb6a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    .plant-container {
+      width: 200px;
+      height: 200px;
+      margin: 1rem 0;
+    }
+
+    .plant-container img {
+      width: 100%;
+    }
+
+    .mood-select {
+      margin-bottom: 1rem;
+    }
+
+    select, button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: var(--accent);
+      color: white;
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+
+    .history {
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 400px;
+      background: var(--card);
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .quote {
+      margin-top: 1.5rem;
+      font-style: italic;
+      color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌿 MoodPlant</h1>
+  <p>How are you feeling today?</p>
+
+  <div class="plant-container">
+    <img id="plantImage" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPLog_G0RStYRmn3H46Hgcf2-aZ2Px0Bm4pQ&s" alt="Plant Mood" />
+  </div>
+
+  <div class="mood-select">
+    <select id="moodSelect">
+      <option value="happy">😊 Happy</option>
+      <option value="sad">😢 Sad</option>
+      <option value="stressed">😖 Stressed</option>
+      <option value="calm">😌 Calm</option>
+      <option value="excited">🤩 Excited</option>
+    </select>
+    <button onclick="updateMood()">Update</button>
+  </div>
+
+  <div class="history">
+    <h3>🌱 Mood History</h3>
+    <ul id="historyList"></ul>
+  </div>
+
+  <p class="quote" id="quote"></p>
+
+  <script>
+    const plantImage = document.getElementById('plantImage');
+    const moodSelect = document.getElementById('moodSelect');
+    const historyList = document.getElementById('historyList');
+    const quoteBox = document.getElementById('quote');
+
+    const plantImages = {
+      happy: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPLog_G0RStYRmn3H46Hgcf2-aZ2Px0Bm4pQ&s",     
+      sad: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPLog_G0RStYRmn3H46Hgcf2-aZ2Px0Bm4pQ&s",       
+      stressed: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPLog_G0RStYRmn3H46Hgcf2-aZ2Px0Bm4pQ&s",  
+      calm: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPLog_G0RStYRmn3H46Hgcf2-aZ2Px0Bm4pQ&s",      
+      excited: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPLog_G0RStYRmn3H46Hgcf2-aZ2Px0Bm4pQ&s"    
+    };
+
+    const quotes = [
+      "Keep growing, even on cloudy days.",
+      "Your mood is valid. So is your growth.",
+      "One small step today is still progress.",
+      "Let yourself bloom at your own pace.",
+      "Storms help roots grow deeper."
+    ];
+
+    function updateMood() {
+      const mood = moodSelect.value;
+      plantImage.src = plantImages[mood];
+      saveMood(mood);
+      displayHistory();
+      showQuote();
+    }
+
+    function saveMood(mood) {
+      const history = JSON.parse(localStorage.getItem('moodHistory')) || [];
+      const today = new Date().toLocaleDateString();
+      history.push({ date: today, mood });
+      localStorage.setItem('moodHistory', JSON.stringify(history));
+    }
+
+    function displayHistory() {
+      const history = JSON.parse(localStorage.getItem('moodHistory')) || [];
+      historyList.innerHTML = "";
+      history.slice(-5).reverse().forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.date}: ${entry.mood}`;
+        historyList.appendChild(li);
+      });
+    }
+
+    function showQuote() {
+      const random = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteBox.textContent = `"${random}"`;
+    }
+
+       displayHistory();
+    showQuote();
+  </script>
+</body>
+</html>
